@@ -3,27 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock de Videojuegos</title>
-    <script defer src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <title>Gestión de Videojuegos</title>
 </head>
 <body>
-    <h1>Lista de Videojuegos</h1>
-    <button onclick="cargarVideojuegos()">Cargar Videojuegos</button>
-    <ul id="lista-videojuegos">
-        <li>FIFA 23 - PlayStation 5</li>
-        <li>Call of Duty: Warzone - PC</li>
-        <li>The Legend of Zelda: Breath of the Wild - Nintendo Switch</li>
-        <li>Grand Theft Auto V - Xbox Series X</li>
-        <li>Red Dead Redemption 2 - PlayStation 4</li>
-        <li>Cyberpunk 2077 - PC</li>
-        <li>God of War Ragnarök - PlayStation 5</li>
-        <li>Super Mario Odyssey - Nintendo Switch</li>
-        <li>Halo Infinite - Xbox Series X</li>
-        <li>Resident Evil 4 Remake - PlayStation 5</li>
-    </ul>
 
-    <h2>Agregar Nuevo Videojuego</h2>
+    <h1>Gestión de Videojuegos</h1>
+
+    <!-- Formulario para agregar un videojuego -->
     <form id="formulario">
         <input type="text" id="titulo" placeholder="Título" required>
         <input type="text" id="plataforma" placeholder="Plataforma" required>
@@ -31,8 +17,86 @@
         <input type="number" id="precio" placeholder="Precio" required>
         <input type="number" id="stock" placeholder="Stock" required>
         <input type="text" id="desarrollador" placeholder="Desarrollador" required>
-        <input type="date" id="fecha_lanzamiento" required>
-        <button type="submit">Agregar</button>
+        <input type="date" id="fecha_lanzamiento" placeholder="Fecha de Lanzamiento" required>
+        <button type="submit">Agregar Videojuego</button>
     </form>
+
+    <h2>Lista de Videojuegos</h2>
+    <ul id="lista-videojuegos"></ul>
+
+    <script>
+        // Al cargar el contenido, se cargan los videojuegos
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarVideojuegos();
+
+            document.getElementById("formulario").addEventListener("submit", agregarVideojuego);
+        });
+
+        // Cargar los videojuegos desde la API
+        function cargarVideojuegos() {
+            const lista = document.getElementById("lista-videojuegos");
+            lista.innerHTML = ""; // Limpiar la lista antes de cargar
+
+            fetch("http://localhost:3000/api/videojuegos")
+                .then(response => response.json())
+                .then(videojuegos => {
+                    videojuegos.forEach(juego => {
+                        const li = document.createElement("li");
+                        li.textContent = `${juego.titulo} - ${juego.plataforma} (${juego.genero}) - $${juego.precio} - Stock: ${juego.stock} - ${juego.desarrollador} - Lanzamiento: ${juego.fecha_lanzamiento}`;
+                        lista.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error al cargar los videojuegos:", error);
+                });
+        }
+
+        // Agregar un nuevo videojuego a la base de datos
+        function agregarVideojuego(event) {
+            event.preventDefault();
+
+            const titulo = document.getElementById("titulo").value;
+            const plataforma = document.getElementById("plataforma").value;
+            const genero = document.getElementById("genero").value;
+            const precio = document.getElementById("precio").value;
+            const stock = document.getElementById("stock").value;
+            const desarrollador = document.getElementById("desarrollador").value;
+            const fecha_lanzamiento = document.getElementById("fecha_lanzamiento").value;
+
+            // Validación de los campos
+            if (!titulo || !plataforma || !genero || !precio || !stock || !desarrollador || !fecha_lanzamiento) {
+                alert("Todos los campos son obligatorios");
+                return;
+            }
+
+            const nuevoJuego = {
+                titulo,
+                plataforma,
+                genero,
+                precio,
+                stock,
+                desarrollador,
+                fecha_lanzamiento
+            };
+
+            fetch("http://localhost:3000/api/videojuegos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(nuevoJuego)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Nuevo videojuego agregado:", data);
+                cargarVideojuegos(); // Recargar la lista después de agregar
+                document.getElementById("formulario").reset(); // Limpiar el formulario
+            })
+            .catch(error => {
+                console.error("Error al agregar el videojuego:", error);
+            });
+        }
+    </script>
+
 </body>
 </html>
