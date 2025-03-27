@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Videojuegos</title>
+    <!-- Referencia al archivo externo de CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -22,10 +24,26 @@
     </form>
 
     <h2>Lista de Videojuegos</h2>
+
+    <!-- Lista predefinida de videojuegos -->
+    <ul id="lista-videojuegos-predefinidos">
+        <li>FIFA 23 - PlayStation 5</li>
+        <li>Call of Duty: Warzone - PC</li>
+        <li>The Legend of Zelda: Breath of the Wild - Nintendo Switch</li>
+        <li>Grand Theft Auto V - Xbox Series X</li>
+        <li>Red Dead Redemption 2 - PlayStation 4</li>
+        <li>Cyberpunk 2077 - PC</li>
+        <li>God of War Ragnarök - PlayStation 5</li>
+        <li>Super Mario Odyssey - Nintendo Switch</li>
+        <li>Halo Infinite - Xbox Series X</li>
+        <li>Resident Evil 4 Remake - PlayStation 5</li>
+    </ul>
+
+    <!-- Lista dinámica de videojuegos (de la API) -->
     <ul id="lista-videojuegos"></ul>
 
     <script>
-        // Al cargar el contenido, se cargan los videojuegos
+        // Al cargar el contenido, se cargan los videojuegos desde la API
         document.addEventListener("DOMContentLoaded", () => {
             cargarVideojuegos();
 
